@@ -1,0 +1,151 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class bst{
+    
+	   public: 
+	   int val;
+	   bst*left,*right;
+	   
+	   bst(int data){
+		   val=data;
+		   left=right=NULL;
+	   }	
+};
+
+
+void inorder(bst *root){
+	
+	if(root==NULL)return;
+	inorder(root->left);
+	cout<<root->val<<" ";
+	inorder(root->right);
+}
+
+
+bool search(bst *root,int key){
+	
+	 if(root==NULL){
+		 return false;
+	 }
+	 
+	 if(key==root->val){
+		 return true;
+	 }
+	 else if(key<root->val){
+		 
+		 return search(root->left,key);
+	 }
+	 
+	 return search(root->right,key);
+}
+
+
+bst *insertion(bst *root,int key){
+	 
+	 if(root==NULL){
+		 bst *temp=new bst(key);
+		 root=temp;
+		 return root;
+	 }
+	 
+	 
+	 if(key<root->val){
+		 
+		  root->left=insertion(root->left,key);
+	 }
+	 
+	else  root->right=insertion(root->right,key);
+	
+	return root;
+	 
+}
+
+
+bst *successor(bst *node ){
+	
+	bst *res=node;
+	
+	while(res->left!=NULL and res!=NULL){
+		res=res->left;
+	}
+	
+	return res;
+}
+
+bst *deletion(bst *root,int key){
+	
+	if(root==NULL){
+		return NULL;
+	}
+	
+	if(key<root->val){
+		
+		root->left=deletion(root->left,key);
+	}
+	else if(key>root->val){
+		root->right=deletion(root->right,key);
+	}
+	else{
+		
+		// if there is one child 
+		
+		if(root->left==NULL){
+			
+			bst *temp=root->right;
+			
+			free(root);
+			return temp;
+			
+		}
+		
+		if(root->right==NULL){
+			bst *temp=root->left;
+			free(root);
+			return temp;
+		}
+		
+		
+		
+		// if there is two child 
+		
+		// find first inorder successor 
+		
+		bst * node =successor(root->right);
+		
+		root->val=node->val;
+		
+		root->right=deletion(root->right,node->val);
+	}
+	
+	return root;
+}
+
+
+int main(){
+	
+	
+	bst *root=new bst(34);
+	root->left=new bst(12);
+	root->right=new bst(50);
+	root->left->left=new bst(3);
+	root->left->right=new bst(20);
+	
+	root->right->right=new bst(60);
+	
+	inorder(root);
+	cout<<endl;
+	
+	cout<<search(root,320);
+	
+	root=insertion(root,25);
+	cout<<endl;
+	inorder(root);
+	
+	root=deletion(root,25);
+	cout<<endl;
+	inorder(root);
+	
+	
+	return 0;
+}
